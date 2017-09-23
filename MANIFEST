@@ -1029,5 +1029,7 @@ t/data/996.txt
 t/data/997.txt
 t/data/998.txt
 t/data/999.txt
-t/pod-coverage.t
-t/pod.t
+xt/boilerplate.t
+xt/pod-coverage.t
+xt/pod.t
+xt/kwalitee.t

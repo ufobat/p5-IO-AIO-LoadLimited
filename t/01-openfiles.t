@@ -6,12 +6,12 @@ use Test::More;
 use IO::AIO;
 use IO::AIO::LoadLimited;
 
-plan tests => 1024;
+plan tests => 1025;
 
 my %data;
 my $limit = 10;
 my @files = map { "t/data/" . $_ . ".txt" } (1..1024);
-my $grp   = aio_group sub { print "Done!" };
+my $grp   = aio_group sub { pass "tests done"; };
 
 aio_load_limited $grp, $limit, @files, sub {
     my ($file, $content) = @_;
@@ -20,7 +20,7 @@ aio_load_limited $grp, $limit, @files, sub {
 
 IO::AIO::flush;
 
-foreach my $file (sort {$a <=> $b} keys %data) {
+foreach my $file (sort keys %data) {
     if (my ($fileno) = $file =~ m/(\d+)\.txt$/) {
         is $fileno, $data{$file}, "$file matches content";
     } else {
