@@ -1,0 +1,68 @@
+NAME
+    IO::AIO::LoadLimited - a tiny IO::AIO extension that allows to load
+    multiple files
+
+VERSION
+    Version 0.01
+
+SYNOPSIS
+    The function aio_load_limited loads a list of files asynchronously where
+    the number of open filehandles used are limited so you dont hit the hard
+    limit of your operating system.
+
+    Perhaps a little code snippet.
+
+        use IO::AIO::LoadLimited;
+
+        my $foo = IO::AIO::LoadLimited->new();
+        ...
+
+EXPORT
+    IO::AIO::LoadLimited exports aio_load_limited.
+
+SUBROUTINES
+    aio_load_limited $group, $limit, @files, $cb;
+
+AUTHOR
+    Martin Barth, "<martin at senfdax.de>"
+
+BUGS
+    Please report any bugs or feature requests to "bug-io-aio-loadlimited at
+    rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=IO-AIO-LoadLimited>. I
+    will be notified, and then you'll automatically be notified of progress
+    on your bug as I make changes.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc IO::AIO::LoadLimited
+
+    You can also look for information at:
+
+    *   RT: CPAN's request tracker (report bugs here)
+
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=IO-AIO-LoadLimited>
+
+    *   AnnoCPAN: Annotated CPAN documentation
+
+        <http://annocpan.org/dist/IO-AIO-LoadLimited>
+
+    *   CPAN Ratings
+
+        <http://cpanratings.perl.org/d/IO-AIO-LoadLimited>
+
+    *   Search CPAN
+
+        <http://search.cpan.org/dist/IO-AIO-LoadLimited/>
+
+ACKNOWLEDGEMENTS
+LICENSE AND COPYRIGHT
+    Copyright 2017 Martin Barth.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of either: the GNU General Public License as published
+    by the Free Software Foundation; or the Artistic License.
+
+    See <http://dev.perl.org/licenses/> for more information.
+
