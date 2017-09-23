@@ -35,7 +35,7 @@ __END__
 
 =head1 NAME
 
-IO::AIO::LoadLimited - a tiny IO::AIO extension that allows to load multiple files
+IO::AIO::LoadLimited - A tiny IO::AIO extension that allows to load multiple files
 
 =head1 VERSION
 
@@ -43,14 +43,20 @@ Version 0.01
 
 =head1 SYNOPSIS
 
-The function aio_load_limited loads a list of files asynchronously where the number of open filehandles used are limited so you dont hit the hard limit of your operating system.
-
-Perhaps a little code snippet.
-
+    use strict;
+    use warnings;
+    use IO::AIO;
     use IO::AIO::LoadLimited;
 
-    my $foo = IO::AIO::LoadLimited->new();
-    ...
+    my @files = (...);
+    my $grp = aio_group sub { ... };
+    aio_load_limited $grp, 10, @files, sub {
+        my ($file, $content) = @_;
+
+        warn "could not read $file: $!" unless defined $content;
+        # whatever is neccessary...
+        ...
+    };
 
 =head1 EXPORT
 
@@ -62,6 +68,16 @@ IO::AIO::LoadLimited exports aio_load_limited.
 
 =item aio_load_limited $group, $limit, @files, $cb;
 
+The function aio_load_limited loads a list of files asynchronously where the number of open filehandles used are limited so you dont hit the hard limit of your operating system. The limit is archived using the group and limit functionality of C<IO::AIO>. The callback $cb gets invoked once for each file with the filename as the first parameter and the content of the file as the second. If the file can not be opened or read the content is C<undef>.
+
+=back
+
+=head1 SEE ALSO
+
+=over
+
+=item L<IO::AIO>
+
 =back
 
 =head1 AUTHOR
@@ -70,9 +86,8 @@ Martin Barth, C<< <martin at senfdax.de> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-io-aio-loadlimited at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=IO-AIO-LoadLimited>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+Please report any bugs or feature requests to
+L<https://github.com/ufobat/p5-IO-AIO-LoadLimited/issues>
 
 =head1 SUPPORT
 
@@ -84,9 +99,9 @@ You can also look for information at:
 
 =over 4
 
-=item * RT: CPAN's request tracker (report bugs here)
+=item * Github: issue and request tracker (report bugs here)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=IO-AIO-LoadLimited>
+L<https://github.com/ufobat/p5-IO-AIO-LoadLimited/issues>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
@@ -103,6 +118,8 @@ L<http://search.cpan.org/dist/IO-AIO-LoadLimited/>
 =back
 
 =head1 ACKNOWLEDGEMENTS
+
+Thanks to M.Lehmann for IO::AIO and thanks to L<www.netdescribe.com>.
 
 =head1 LICENSE AND COPYRIGHT
 
