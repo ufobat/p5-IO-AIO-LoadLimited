@@ -68,7 +68,7 @@ IO::AIO::LoadLimited exports aio_load_limited.
 
 =item aio_load_limited $group, $limit, @files, $cb;
 
-The function aio_load_limited loads a list of files asynchronously where the number of open filehandles used are limited so you dont hit the hard limit of your operating system. The limit is archived using the group and limit functionality of C<IO::AIO>. The callback $cb gets invoked once for each file with the filename as the first parameter and the content of the file as the second. If the file can not be opened or read the content is C<undef>.
+The function aio_load_limited loads a list of files asynchronously where the number of open filehandles used are limited so you don't hit the hard limit of your operating system. The limit is archived using the group and limit functionality of C<IO::AIO>. The callback $cb gets invoked once for each file with the filename as the first parameter and the content of the file as the second. If the file can not be opened or read the content is C<undef>.
 
 =back
 
