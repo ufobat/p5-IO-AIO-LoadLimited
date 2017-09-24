@@ -48,10 +48,10 @@ Version 0.01
     use IO::AIO;
     use IO::AIO::LoadLimited;
 
-    my @files = (...);
+    my @filenames = (...);
     my $grp = aio_group sub { ... };
-    aio_load_limited $grp, 10, @files, sub {
-        my ($file, $content) = @_;
+    aio_load_limited $grp, 10, @filenames, sub {
+        my ($filename, $content) = @_;
 
         warn "could not read $file: $!" unless defined $content;
         # whatever is neccessary...
