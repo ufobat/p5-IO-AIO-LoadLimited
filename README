@@ -1,37 +1,48 @@
 NAME
-    IO::AIO::LoadLimited - a tiny IO::AIO extension that allows to load
+    IO::AIO::LoadLimited - A tiny IO::AIO extension that allows to load
     multiple files
 
 VERSION
     Version 0.01
 
 SYNOPSIS
-    The function aio_load_limited loads a list of files asynchronously where
-    the number of open filehandles used are limited so you dont hit the hard
-    limit of your operating system.
-
-    Perhaps a little code snippet.
-
+        use strict;
+        use warnings;
+        use IO::AIO;
         use IO::AIO::LoadLimited;
 
-        my $foo = IO::AIO::LoadLimited->new();
-        ...
+        my @files = (...);
+        my $grp = aio_group sub { ... };
+        aio_load_limited $grp, 10, @files, sub {
+            my ($file, $content) = @_;
+
+            warn "could not read $file: $!" unless defined $content;
+            # whatever is neccessary...
+            ...
+        };
 
 EXPORT
     IO::AIO::LoadLimited exports aio_load_limited.
 
 SUBROUTINES
     aio_load_limited $group, $limit, @files, $cb;
+        The function aio_load_limited loads a list of files asynchronously
+        where the number of open filehandles used are limited so you don't
+        hit the hard limit of your operating system. The limit is archived
+        using the group and limit functionality of "IO::AIO". The callback
+        $cb gets invoked once for each file with the filename as the first
+        parameter and the content of the file as the second. If the file can
+        not be opened or read the content is "undef".
+
+SEE ALSO
+    IO::AIO
 
 AUTHOR
     Martin Barth, "<martin at senfdax.de>"
 
 BUGS
-    Please report any bugs or feature requests to "bug-io-aio-loadlimited at
-    rt.cpan.org", or through the web interface at
-    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=IO-AIO-LoadLimited>. I
-    will be notified, and then you'll automatically be notified of progress
-    on your bug as I make changes.
+    Please report any bugs or feature requests to
+    <https://github.com/ufobat/p5-IO-AIO-LoadLimited/issues>
 
 SUPPORT
     You can find documentation for this module with the perldoc command.
@@ -40,9 +51,9 @@ SUPPORT
 
     You can also look for information at:
 
-    *   RT: CPAN's request tracker (report bugs here)
+    *   Github: issue and request tracker (report bugs here)
 
-        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=IO-AIO-LoadLimited>
+        <https://github.com/ufobat/p5-IO-AIO-LoadLimited/issues>
 
     *   AnnoCPAN: Annotated CPAN documentation
 
@@ -57,6 +68,8 @@ SUPPORT
         <http://search.cpan.org/dist/IO-AIO-LoadLimited/>
 
 ACKNOWLEDGEMENTS
+    Thanks to M.Lehmann for IO::AIO and thanks to www.netdescribe.com.
+
 LICENSE AND COPYRIGHT
     Copyright 2017 Martin Barth.
 
