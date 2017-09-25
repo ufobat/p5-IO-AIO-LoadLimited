@@ -149,7 +149,7 @@ L<http://search.cpan.org/dist/IO-AIO-LoadLimited/>
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to M.Lehmann for IO::AIO and thanks to L<www.netdescribe.com>.
+Thanks to M.Lehmann for IO::AIO and thanks to L<www.netdescribe.com>. Thanks to Moritz Lenz and Steffen Winkler for reviewing.
 
 =head1 LICENSE AND COPYRIGHT
 
