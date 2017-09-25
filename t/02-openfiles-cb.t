@@ -6,16 +6,17 @@ use Test::More;
 use IO::AIO;
 use IO::AIO::LoadLimited;
 
-plan tests => 1025;
+plan tests => 11;
 
 my %data;
-my @files = map { "t/data/" . $_ . ".txt" } (1..1024);
-my $grp   = aio_group sub { pass "tests done"; };
+my @files = map { "t/data/" . $_ . ".txt" } (1..10);
 
 aio_load_limited @files, sub {
     my ($file, $content) = @_;
     $data{$file} = $content ? $content : "coudnt read file: $!";
-}, $grp;
+}, sub {
+    pass "tests done";
+}, 2;
 
 IO::AIO::flush;
 

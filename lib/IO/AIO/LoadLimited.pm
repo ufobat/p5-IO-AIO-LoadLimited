@@ -2,6 +2,7 @@ package IO::AIO::LoadLimited;
 
 use common::sense;
 use base qw(Exporter);
+use Carp qw(croak);
 
 # IO:AIO Version 2 supports groups and requests objects
 use IO::AIO 2;
@@ -9,15 +10,26 @@ use IO::AIO 2;
 our @EXPORT  = qw(aio_load_limited);
 our $VERSION = '0.01';
 
-sub aio_load_limited($$\@$) {
-    my ($group, $limit, $files, $cb) = @_;
+sub aio_load_limited(\@&$;$) {
+    my ($paths, $filecb, $grp_or_donecb, $limit) = @_;
+    my $group;
+
+    $limit //= 10;
+
+    if (ref($grp_or_donecb) eq 'CODE') {
+        $group = aio_group $grp_or_donecb;
+    } elsif (ref($grp_or_donecb) eq 'IO::AIO::GRP') {
+        $group = $grp_or_donecb;
+    } else {
+        croak '3rd parameter must be a callback or IO::AIO::GRP';
+    }
 
     limit $group $limit;
     feed $group sub {
         my $data;
-        my $path = shift @$files or return $group->result(1);
+        my $path = shift @$paths or return $group->result(1);
         my $pri  = aioreq_pri;
-        my $grp  = aio_group sub { $cb->( $_[0] >= 0 ? ($path, $data) : ($path, undef) )};
+        my $grp  = aio_group sub { $filecb->( $_[0] >= 0 ? ($path, $data) : ($path, undef) )};
         add $group $grp;
 
         aioreq_pri $pri;
@@ -27,7 +39,7 @@ sub aio_load_limited($$\@$) {
             add $grp aio_read $fh, 0, (-s $fh), $data, 0, sub { $grp->result($_[0]) };
         };
     };
-}
+};
 
 1;
 
@@ -48,15 +60,31 @@ Version 0.01
     use IO::AIO;
     use IO::AIO::LoadLimited;
 
-    my @filenames = (...);
-    my $grp = aio_group sub { ... };
-    aio_load_limited $grp, 10, @filenames, sub {
-        my ($filename, $content) = @_;
+    my @pathnames = ( '/path/to/file', ...);
+    my $group = aio_group sub { ... };
+    my $limit = 10;
+    aio_load_limited @pathnames, sub {
+        my ($pathname, $content) = @_;
 
-        warn "could not read $file: $!" unless defined $content;
+        warn "could not read $pathname: $!" unless defined $content;
         # whatever is neccessary...
         ...
+    }, $group, $limit;
+
+or
+
+    aio_load_limited @pathnames, sub {
+        my ($pathname, $content) = @_;
+
+        warn "could not read $pathname: $!" unless defined $content;
+        # whatever is neccessary...
+        ...
+    }, sub {
+         # done cb
     };
+
+    IO::AIO::flush; # or use AnyEvent::AIO
+
 
 =head1 EXPORT
 
@@ -66,9 +94,9 @@ IO::AIO::LoadLimited exports aio_load_limited.
 
 =over
 
-=item aio_load_limited $group, $limit, @files, $cb;
+=item aio_load_limited @files, $cb, $group_or_donecb, $limit = 10;
 
-The function aio_load_limited loads a list of files asynchronously where the number of open filehandles used are limited so you don't hit the hard limit of your operating system. The limit is archived using the group and limit functionality of C<IO::AIO>. The callback $cb gets invoked once for each file with the filename as the first parameter and the content of the file as the second. If the file can not be opened or read the content is C<undef>.
+The function aio_load_limited loads a list of files asynchronously where the number of open filehandles used are limited so you don't hit the hard limit of your operating system. The limit is archived using the group and limit functionality of C<IO::AIO>. The callback $cb gets invoked once for each file with the pathname as the first parameter and the content of the file as the second. If the file can not be opened or read the content is C<undef>. The third parameter $group_or_donecb is either another callback that thats called when everthing is done or an IO::AIO::GRP object. The last parameter $limit is optional, its default value is 10.;
 
 =back
 
@@ -77,6 +105,8 @@ The function aio_load_limited loads a list of files asynchronously where the num
 =over
 
 =item L<IO::AIO>
+
+=item L<AnyEvent::IO> and L<AnyEvent::AIO>
 
 =back
 
