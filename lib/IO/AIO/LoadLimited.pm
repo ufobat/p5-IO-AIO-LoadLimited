@@ -8,13 +8,13 @@ use Carp qw(croak);
 use IO::AIO 2;
 
 our @EXPORT  = qw(aio_load_limited);
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub aio_load_limited(\@&$;$) {
     my ($paths, $filecb, $grp_or_donecb, $limit) = @_;
     my $group;
 
-    $limit //= 10;
+    $limit = 10 unless defined $limit;
 
     if (ref($grp_or_donecb) eq 'CODE') {
         $group = aio_group $grp_or_donecb;

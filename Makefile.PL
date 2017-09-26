@@ -15,7 +15,7 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => '0',
     },
     BUILD_REQUIRES => {
-        'Test::More' => '0',
+        'Test::More' => '1.0',
     },
     PREREQ_PM => {
         'IO::AIO'              => '2',
